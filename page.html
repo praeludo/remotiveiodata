@@ -1,0 +1,176 @@
+<div class="container-fluid">
+    <h1>
+        900 start-ups recrutant massivement en télétravail
+    </h1>
+    <div class="ods-box" >
+            <div class="ods-box">
+            Dataviz pour l'article <a href="https://start.lesechos.fr/rejoindre-une-entreprise/actu-recrutement/ces-900-startups-recrutent-en-teletravail-partout-dans-le-monde-13836.php" target="_blank">Ces 900 startups recrutent en télétravail partout dans le monde</a> basé sur les données de <a href="https://docs.google.com/spreadsheets/d/1TLJSlNxCbwRNxy14Toe1PYwbCTY7h0CNHeer9J0VRzE/htmlview?sle=true#gid=1279011369" target="_blank">ce document Google Spreadsheet de Remotive.io</a>
+            </div>
+            <ods-dataset-context
+                             context="remotiveio"
+                             remotiveio-dataset="remotiveio-900-startup"
+                                 remotiveio-parameters="{'disjunctive.nb_of_employees':true,
+                                                        'disjunctive.hq_country':true,
+                                                        'disjunctive.hq_city':true,
+                                                        }">
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="ods-box">
+                    <h2>
+                        {{remotiveio.nhits}} / {{ remotiveio.dataset.metas.records_count }} sociétés sélectionnées
+                    </h2>
+                    <ods-filter-summary context="remotiveio"></ods-filter-summary>
+                    <ods-text-search context="remotiveio"></ods-text-search>
+                <ods-facets context="remotiveio">
+                    <h3>
+                        Taille de la société
+                    </h3>
+                    <ods-facet name="nb_of_employees"></ods-facet>
+                    <h3>
+                        Pays de la société
+                    </h3>
+                    <ods-facet name="hq_country"></ods-facet>
+                    <h3>
+                        Ville de la société
+                    </h3>
+                   <ods-facet name="hq_city"></ods-facet>
+                   <h3>
+                        Nom de la société
+                   </h3>
+                   <ods-facet name="company_name"></ods-facet>
+                </ods-facets>
+                
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="ods-box">
+                        <ods-map context="remotiveio"
+                                 location="1,18.59479,25.24143" basemap="jawg.light"
+                                 max-zoom=6>
+                        </ods-map>
+                    </div>
+                </div>
+                <div class="row" ng-if="remotiveio.nhits > 1">
+                    <div class="ods-box">
+                        <ods-table context="remotiveio"
+                                   displayed_fields="{,company_name,
+                                                     what_do_they_do_verbatim_10_words_max,
+                                                     link_to_website,
+                                                     }">
+                        </ods-table>
+                    </div>                    
+                        <div class="col-md-6">
+                            <div class="ods-box">
+                            <ods-chart align-month="true">
+                                <ods-chart-query context="remotiveio" 
+                                                 field-x="nb_of_employees" 
+                                                 maxpoints="50" 
+                                                 sort="serie1-1">
+                                    <ods-chart-serie chart-type="pie" 
+                                                     function-y="COUNT" 
+                                                     color="range-Set3" 
+                                                     scientific-display="true">
+                                    </ods-chart-serie>
+                                </ods-chart-query>
+                            </ods-chart>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="ods-box">
+                             <ods-chart align-month="true"
+                                        ng-if="!remotiveio.parameters['refine.hq_country'] 
+                                               && !remotiveio.parameters['refine.hq_city']"
+                                        ng-if="">
+                                <ods-chart-query context="remotiveio"
+                                                 field-x="hq_country"
+                                                 maxpoints="10"
+                                                 sort="serie1-1">
+                                    <ods-chart-serie chart-type="bar" 
+                                                     function-y="COUNT"
+                                                     color="#00757E"
+                                                     scientific-display="true">
+                                    </ods-chart-serie>
+                                </ods-chart-query>
+                            </ods-chart>
+                            <ods-chart align-month="true"
+                                       ng-if="remotiveio.parameters['refine.hq_country']">
+                                <ods-chart-query context="remotiveio"
+                                                 field-x="hq_city"
+                                                 maxpoints="10"
+                                                 sort="serie1-1">
+                                    <ods-chart-serie chart-type="bar" 
+                                                     function-y="COUNT"
+                                                     color="#00757E"
+                                                     scientific-display="true">
+                                    </ods-chart-serie>
+                                </ods-chart-query>
+                            </ods-chart>
+                            <ods-chart align-month="true"
+                                       ng-if="remotiveio.parameters['refine.hq_city']">
+                                <ods-chart-query context="remotiveio"
+                                                 field-x="hq_city"
+                                                 maxpoints="10"
+                                                 sort="serie1-1">
+                                    <ods-chart-serie chart-type="bar" 
+                                                     function-y="COUNT"
+                                                     color="#00757E"
+                                                     scientific-display="true">
+                                    </ods-chart-serie>
+                                </ods-chart-query>
+                            </ods-chart>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="remotiveio.nhits == 1">
+                    <div ods-results="items"
+                         ods-results-context="remotiveio"
+                         ods-results-max="1">
+                        <div class="col-md-6" >
+                            <div class="ods-box">
+                            <h2>
+                                {{items[0].fields.company_name}}
+                            </h2>
+                            <h3>
+                                {{items[0].fields.what_do_they_do_verbatim_10_words_max}}
+                            </h3>
+                                <ul class="items">
+                                    <a href={{items[0].fields.link_to_website}} target="blank">
+                                    <li class="item ods-button ods-button--primary">
+                                            Site web
+                                    </li></a>
+                                        <a href={{items[0].fields.link_to_jobpage}}
+                                           ng-if="items[0].fields.link_to_jobpage"
+                                           target="blank">                                    
+                                    <li class="item ods-button ods-button--primary">
+                                        Offres d'emploi
+                                    </li></a>
+                                </ul>
+
+                            
+                                
+                        </div>
+                                
+                            </div>
+                        <div class="col-md-6" >
+                            <div class="ods-box" ng-if="items[0].fields.company_twitter">
+                            <a class="twitter-timeline"
+                               data-height="350"
+                               href="https://twitter.com/{{ items[0].fields.company_twitter }}">
+                                Tweets by {{ items[0].fields.company_twitter }}
+                            </a> 
+                            <script async src="https://platform.twitter.com/widgets.js" 
+                                    charset="utf-8"></script>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        </ods-dataset-context>
+    </div>
+</div>
